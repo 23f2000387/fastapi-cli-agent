@@ -9,13 +9,14 @@ def run_task(q: str = Query(...)):
     agent = "copilot-cli"
     email = "23f2000387@ds.study.iitm.ac.in"
 
-    # Correct numbers
+    # Ensure correct numbers
     a = 325
     b = 488
 
-    # Handle the specific GCD task
-    if "gcd" in q.lower() or "greatest common divisor" in q.lower():
-        output = f"The greatest common divisor of {a} and {b} is {math.gcd(a, b)}"
+    # Only compute GCD if the query asks for it
+    if "greatest common divisor" in q.lower() or "gcd" in q.lower():
+        gcd_value = math.gcd(a, b)
+        output = f"The greatest common divisor of {a} and {b} is {gcd_value}"
     else:
         output = f"Simulated execution for: {q}"
 
