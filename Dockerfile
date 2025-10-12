@@ -1,24 +1,24 @@
+# Use Python base image
 FROM python:3.11-slim
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y curl tar gzip
-
-# Download GitHub Copilot CLI, extract and move to /usr/local/bin
-RUN curl -sSL https://github.com/github/copilot-cli/releases/latest/download/copilot-linux-amd64.tar.gz \
-    | tar -xz -C /usr/local/bin
-
-# Make sure binary is executable
-RUN chmod +x /usr/local/bin/copilot
 
 # Set working directory
 WORKDIR /app
 
-# Install Python dependencies
+# Copy requirements
 COPY requirements.txt .
+
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project files
+# Install GitHub Copilot CLI (example using npm)
+RUN apt-get update && apt-get install -y curl nodejs npm \
+    && npm install -g @github/copilot-cli
+
+# Copy your app code
 COPY . .
 
-# Run FastAPI app
+# Expose port
+EXPOSE 8000
+
+# Run FastAPI
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
