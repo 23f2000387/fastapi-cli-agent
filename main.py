@@ -1,28 +1,30 @@
 from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 import math
 
 app = FastAPI()
 
+# Enable CORS for all origins (adjust if needed for security)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # You can restrict to specific domains
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# POST request body model
+class TaskRequest(BaseModel):
+    q: str
+
+# GET endpoint using query parameter
 @app.get("/task")
-def run_task(q: str = Query(...)):
-    agent = "copilot-cli"
-    email = "23f2000387@ds.study.iitm.ac.in"
+def run_task_get(q: str = Query(...)):
+    return process_task(q)
 
-    # Ensure correct numbers
-    a = 325
-    b = 488
-
-    # Only compute GCD if the query asks for it
-    if "greatest common divisor" in q.lower() or "gcd" in q.lower():
-        gcd_value = math.gcd(a, b)
-        output = f"The greatest common divisor of {a} and {b} is {gcd_value}"
-    else:
-        output = f"Simulated execution for: {q}"
-
-    return JSONResponse({
-        "task": q,
-        "agent": agent,
-        "output": output,
-        "email": email
-    })
+# POST endpoint using JSON body
+@app.post("/task")
+def run_task_post(request: TaskRequest):
+    return process_task(request.q)_
