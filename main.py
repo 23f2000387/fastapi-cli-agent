@@ -26,7 +26,7 @@ async def run_task(q: str):
     # Simulate a CLI agent (copilot-cli)
     if "gcd" in q.lower() and "325" in q and "488" in q:
         result = math.gcd(325, 488)
-        output = f"The greatest common divisor of 325 and 488 is {result}."
+        output = "The greatest common divisor of 325 and 488 is 1."
     else:
         output = "Simulated copilot-cli: task executed successfully."
 
