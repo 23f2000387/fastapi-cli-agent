@@ -1,19 +1,18 @@
-# Use a lightweight Python base image
 FROM python:3.12-slim
 
-# Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+# Install nodejs, npm, git
+RUN apt update && apt install -y curl git nodejs npm build-essential
 
-# Copy files
+# Install GitHub Copilot CLI
+RUN npm install -g @githubnext/cli
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
 COPY . .
 
-# Expose port for Render or local
 EXPOSE 8000
 
-# Start the FastAPI app
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
