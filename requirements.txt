@@ -1,2 +1,4 @@
 fastapi
 uvicorn
+Django>=4.2
+gunicorn>=20.1
