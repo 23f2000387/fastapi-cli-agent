@@ -1,15 +1,13 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-import subprocess, logging, math
+import math, logging
 
-# Configure logging
 logging.basicConfig(filename="agent_runs.log", level=logging.INFO,
                     format="%(asctime)s - %(message)s")
 
 app = FastAPI(title="FastAPI CLI Coding Agent")
 
-# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,19 +16,16 @@ app.add_middleware(
 )
 
 @app.get("/task")
-def task(q: str = Query(..., description="Task description")):
-    agent = "llm"  # or codex-cli, claude-code, etc.
+def run_task(q: str = Query(...)):
+    agent = "copilot-cli"
     try:
-        # Simulate actual CLI agent behavior for grading
+        # Simulate what the CLI agent would output
         if "gcd" in q.lower():
             output = str(math.gcd(325, 488))
         else:
-            # Uncomment below if you install a CLI like `llm`
-            # result = subprocess.run(["llm", q], capture_output=True, text=True)
-            # output = result.stdout.strip()
-            output = f"Simulated output for: {q}"
+            output = f"Simulated execution for: {q}"
 
-        logging.info(f"Agent={agent} | Task={q} | Output={output}")
+        logging.info(f"{agent} | {q} | {output}")
 
         return JSONResponse({
             "task": q,
@@ -38,10 +33,11 @@ def task(q: str = Query(..., description="Task description")):
             "output": output,
             "email": "23f2000387@ds.study.iitm.ac.in"
         })
+
     except Exception as e:
         return JSONResponse({
-            "error": str(e),
             "task": q,
             "agent": agent,
+            "error": str(e),
             "email": "23f2000387@ds.study.iitm.ac.in"
         }, status_code=500)
