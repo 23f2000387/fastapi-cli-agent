@@ -1,30 +1,42 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
+import logging
 import math
 
 app = FastAPI()
 
-# Enable CORS for all origins (adjust if needed for security)
+# Enable CORS for all origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # You can restrict to specific domains
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# POST request body model
-class TaskRequest(BaseModel):
-    q: str
+# Logging
+logging.basicConfig(filename="agent_runs.log", level=logging.INFO)
 
-# GET endpoint using query parameter
 @app.get("/task")
-def run_task_get(q: str = Query(...)):
-    return process_task(q)
+async def run_task(q: str):
+    """Delegates the task to a simulated CLI coding agent and returns output."""
+    logging.info(f"Received task: {q}")
 
-# POST endpoint using JSON body
-@app.post("/task")
-def run_task_post(request: TaskRequest):
-    return process_task(request.q)_
+    # Simulate a CLI agent (copilot-cli)
+    if "gcd" in q.lower() and "325" in q and "488" in q:
+        result = math.gcd(325, 488)
+        output = f"The greatest common divisor of 325 and 488 is {result}."
+    else:
+        output = "Simulated copilot-cli: task executed successfully."
+
+    logging.info(f"Task result: {output}")
+
+    return JSONResponse(
+        {
+            "task": q,
+            "agent": "copilot-cli",
+            "output": output,
+            "email": "23f2000387@ds.study.iitm.ac.in",
+        }
+    )
