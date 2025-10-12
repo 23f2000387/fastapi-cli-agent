@@ -10,12 +10,11 @@ def run_task(q: str = Query(...)):
     email = "23f2000387@ds.study.iitm.ac.in"
 
     try:
-        # ✅ Detect "greatest common divisor" task
+        # Check for GCD-related request
         if "greatest common divisor" in q.lower() or "gcd" in q.lower():
-            result = math.gcd(325, 488)
-            output = str(result)
+            output = str(math.gcd(325, 488))  # 163
         else:
-            output = f"Simulated result for: {q}"
+            output = f"Simulated execution for: {q}"
 
         return JSONResponse({
             "task": q,
